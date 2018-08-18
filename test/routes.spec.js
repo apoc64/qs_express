@@ -71,7 +71,7 @@ describe('API Routes', () => {
     });
   }); // it should post a food
 
-  it('should return all foods', done => {
+  it('should return one food', done => {
     chai.request(server)
     .get('/api/v1/foods/1')
     .end((err, response) => {
@@ -85,4 +85,25 @@ describe('API Routes', () => {
       done();
     });
   });
+
+  it('should delete one food', done => {
+    chai.request(server)
+    .delete('/api/v1/foods/1')
+    .end((err, response) => {
+      response.should.have.status(204);
+
+      done();
+    });
+  });
+
+  it('should return a 404 if no food to delete', done => {
+    chai.request(server)
+    .delete('/api/v1/foods/3')
+    .end((err, response) => {
+      response.should.have.status(404);
+
+      done();
+    });
+  });
+
 });
