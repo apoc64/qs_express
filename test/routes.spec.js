@@ -133,6 +133,7 @@ describe('Meal Routes', () => {
       response.body.length.should.equal(4);
       response.body[0].should.have.property('name');
       response.body[0].name.should.equal('Breakfast');
+      response.body[0].should.have.property('foods');
       response.body[0].foods.should.be.a('array');
       response.body[0].foods[0].should.have.property('id');
       response.body[0].foods[0].id.should.equal(3);
