@@ -34,6 +34,7 @@ describe('API Routes', () => {
   beforeEach((done) => {
     database('foods').del().then(() =>
       database('foods').insert({
+        id: 1,
         name: "banana",
         calories: 150
       }).then(() => done())
@@ -69,4 +70,19 @@ describe('API Routes', () => {
       done();
     });
   }); // it should post a food
+
+  it('should return all foods', done => {
+    chai.request(server)
+    .get('/api/v1/foods/1')
+    .end((err, response) => {
+      response.should.have.status(200);
+      response.should.be.json;
+      response.body.should.be.a('object');
+      response.body.should.have.property('name');
+      response.body.name.should.equal('banana');
+      response.body.should.have.property('calories');
+      response.body.calories.should.equal(150);
+      done();
+    });
+  });
 });
