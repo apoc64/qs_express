@@ -15,7 +15,7 @@ app.get('/', (request, response) => {
   response.send("Here's a response");
 });
 
-app.get('/foods', (request, response) => {
+app.get('/api/v1/foods', (request, response) => {
   database('foods').select()
     .then((foods) => {
       response.status(200).json(foods);

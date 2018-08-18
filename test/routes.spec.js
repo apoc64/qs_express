@@ -23,23 +23,34 @@ describe('Client Routes', () => {
 });
 
 describe('API Routes', () => {
-  it('should return all foods', done => {
+  before((done) => {
+    database.migrate.latest()
+    .then(() => done())
+    .catch(error => {
+      throw error;
+    });
+  });
+
+  beforeEach((done) => {
+    // Needs deletion/seed
     database('foods').insert({
       name: "banana",
       calories: 150
-    });
+    }).then(() => done());
+  });
 
+  it('should return all foods', done => {
     chai.request(server)
-    .get('/foods')
+    .get('/api/v1/foods')
     .end((err, response) => {
       response.should.have.status(200);
       response.should.be.json;
       response.body.should.be.a('array');
-      response.body.length.should.equal(1);
+      response.body.length.should.equal(3);
       response.body[0].should.have.property('name');
-      response.body[0].title.should.equal('banana');
+      response.body[0].name.should.equal('banana');
       response.body[0].should.have.property('calories');
-      response.body[0].title.should.equal(150);
+      response.body[0].calories.should.equal(150);
       done();
     });
   });
