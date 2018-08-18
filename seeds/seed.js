@@ -6,7 +6,6 @@ exports.seed = function(knex, Promise) {
     .then(() => {
       return Promise.all([
 
-        console.log("Reset old database");
         knex('meals').insert([
           { name: 'Breakfast', id: 1 },
           { name: 'Snack', id: 2 },
@@ -22,8 +21,8 @@ exports.seed = function(knex, Promise) {
         })
         .then(() => {
           return knex('meal_foods').insert([
-            { meal_id: 1, food_id: 3 }
-            { meal_id: 3, food_id: 2 }
+            { meal_id: 1, food_id: 3 },
+            { meal_id: 3, food_id: 2 },
             { meal_id: 4, food_id: 1 }
           ])
         })

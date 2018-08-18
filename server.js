@@ -58,7 +58,12 @@ app.delete('/api/v1/foods/:id', (request, response) => {
 });
 
 // Meal Routes:
-
+app.get('/api/v1/meals', (request, response) => {
+  database('meals').select()
+  .then((meals) => {
+    response.status(200).json(meals);
+  })
+});
 
 // Listener:
 app.listen(app.get('port'), () => {
