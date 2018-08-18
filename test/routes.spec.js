@@ -23,5 +23,31 @@ describe('Client Routes', () => {
 });
 
 describe('API Routes', () => {
+  database('foods').insert({
+    name: "banana",
+    calories: 150
+  });
 
+  chai.request(server)
+  .get('/')
+  .end((err, response) => {
+    response.should.have.status(200);
+    response.should.be.json;
+    response.body.should.be.a('array');
+    response.body.length.should.equal(1);
+    response.body[0].should.have.property('name');
+    response.body[0].title.should.equal('banana');
+    response.body[0].should.have.property('calories');
+    response.body[0].title.should.equal(150);
+    done();
+  });
+  // when I send a request to: GET /api/v1/foods
+  // I get all the foods in the database
+  // Foods look like:
+  //
+  // {
+  // "id": 1,
+  // "name": "Banana",
+  // "calories": 150
+  // },
 });
