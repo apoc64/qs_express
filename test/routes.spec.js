@@ -54,5 +54,9 @@ describe('API Routes', () => {
       response.body[0].calories.should.equal(150);
       done();
     });
-  });
+  }); // it should return all foods
+
+  it('should post a food', done => {
+    
+  }); // it should post a food
 });
