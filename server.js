@@ -1,6 +1,9 @@
 const express = require('express');
+var cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+
+app.use(cors())
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
@@ -25,7 +28,7 @@ app.get('/api/v1/foods', (request, response) => {
 
 app.post('/api/v1/foods', (request, response) => {
   const food = request.body.food;
-
+  // for - req'd params
   database('foods').insert(food)
   .then(() => {
     response.status(201).json({ message: "food created" })
