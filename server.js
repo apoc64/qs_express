@@ -15,6 +15,7 @@ app.get('/', (request, response) => {
   response.send("Here's a response");
 });
 
+// Food Routes:
 app.get('/api/v1/foods', (request, response) => {
   database('foods').select()
     .then((foods) => {
@@ -22,6 +23,20 @@ app.get('/api/v1/foods', (request, response) => {
     })
 });
 
+app.post('/api/v1/foods', (request, response) => {
+  const food = request.body.food;
+
+  database('foods').insert(food)
+  .then(() => {
+    response.status(201).json({ message: "food created" })
+  })
+  .catch(error => {
+    respopnse.status(500).json({ error })
+  })
+});
+
+
+// Listener:
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });

@@ -56,7 +56,17 @@ describe('API Routes', () => {
     });
   }); // it should return all foods
 
-  // it('should post a food', done => {
-  //
-  // }); // it should post a food
+  it('should post a food', done => {
+    chai.request(server)
+    .post('/api/v1/foods')
+    .send({ "food": {
+      "name": "pizza",
+      "calories": 400
+      }
+    })
+    .end((err, response) => {
+      response.should.have.status(201)
+      done();
+    });
+  }); // it should post a food
 });
