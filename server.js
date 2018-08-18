@@ -46,6 +46,17 @@ app.get('/api/v1/foods/:id', (request, response) => {
   })
 });
 
+app.delete('/api/v1/foods/:id', (request, response) => {
+  database('foods').where('id', request.params.id).del()
+  .then((success) => {
+    if(success) {
+      response.status(204).json({ message: "food deleted" });
+    } else {
+      response.status(404).json({ message: "invalid food" });
+    }
+  })
+});
+
 
 // Listener:
 app.listen(app.get('port'), () => {
