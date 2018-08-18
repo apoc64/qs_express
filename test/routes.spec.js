@@ -30,7 +30,7 @@ describe('API Routes', () => {
     });
 
     chai.request(server)
-    .get('/')
+    .get('/foods')
     .end((err, response) => {
       response.should.have.status(200);
       response.should.be.json;
