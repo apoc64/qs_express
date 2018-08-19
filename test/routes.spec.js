@@ -22,7 +22,7 @@ describe('Client Routes', () => {
 
 });
 
-describe('API Routes', () => {
+describe('Food Routes', () => {
   before((done) => {
     database.migrate.latest()
     .then(() => done())
@@ -32,7 +32,10 @@ describe('API Routes', () => {
   });
 
   beforeEach((done) => {
-    database('foods').del().then(() =>
+    database('meal_foods').del()
+    .then(() => database('meals').del())
+    .then(() => database('foods').del())
+    .then(() =>
       database('foods').insert({
         id: 1,
         name: "banana",
@@ -84,7 +87,7 @@ describe('API Routes', () => {
       response.body.calories.should.equal(150);
       done();
     });
-  });
+  }); // it should return one food
 
   it('should delete one food', done => {
     chai.request(server)
@@ -94,16 +97,55 @@ describe('API Routes', () => {
 
       done();
     });
-  });
+  }); // it should delete one food
 
   it('should return a 404 if no food to delete', done => {
     chai.request(server)
     .delete('/api/v1/foods/3')
     .end((err, response) => {
       response.should.have.status(404);
-
       done();
+    });
+  }); // it should return 404 if no food
+}); // end of food routes
+
+describe('Meal Routes', () => {
+  before((done) => {
+    database.migrate.latest()
+    .then(() => done())
+    .catch(error => {
+      throw error;
     });
   });
 
-});
+  beforeEach((done) => {
+    database.seed.run()
+    .then(() => done())
+    .catch(error => {
+      throw error;
+    });
+  });
+
+  it('should return meals with foods', done => {
+    // console.log("About to request meals");
+    chai.request(server)
+    .get('/api/v1/meals')
+    .end((err, response) => {
+      response.should.have.status(200);
+      response.should.be.json;
+      console.log(response.body);
+      response.body.should.be.a('array');
+      response.body.length.should.equal(4);
+      response.body[0].should.have.property('name');
+      response.body[0].name.should.equal('Breakfast');
+      response.body[0].should.have.property('foods');
+      response.body[0].foods.should.be.a('array');
+      response.body[0].foods[0].should.have.property('id');
+      response.body[0].foods[0].id.should.equal(3);
+      response.body[0].foods[0].should.have.property('name');
+      response.body[0].foods[0].name.should.equal('banana');
+      response.body[0].foods[0].calories.should.equal(150);
+      done();
+    });
+  }); // it should return one food
+}); // end of meal routes
