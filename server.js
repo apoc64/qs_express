@@ -70,6 +70,22 @@ app.get('/api/v1/meals', (request, response) => {
   }) // end then - JSON parse
 }); // end get meals
 
+app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
+  database('foods').where('id', request.params.food_id)
+  .then((food) => {
+    const food_name = food[0].name.toUpperCase();
+    database('meals').where('id', request.params.meal_id)
+    .then((meal) => {
+      const meal_name = meal[0].name.toUpperCase()
+      database('meal_foods')
+      .insert({'meal_id': request.params.meal_id, 'food_id': request.params.food_id})
+      .then(() => {
+        response.status(201).json({'message': `Successfully added ${food_name} to ${meal_name}`})
+      })
+    }) // then meal
+  }) // then food
+}); // end post meal food
+
 
 // Helper Methods:
 function parseMeals(meals) {
