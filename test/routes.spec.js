@@ -159,7 +159,7 @@ describe('Meal Routes', () => {
 
   it('should post a food to a meal', done => {
     chai.request(server)
-    .post('/api/v1/meals/1/foods/1')
+    .post('/api/v1/meals/2/foods/1')
     .end((err, response) => {
       response.should.have.status(201);
       response.should.be.json;
