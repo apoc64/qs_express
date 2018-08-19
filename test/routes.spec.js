@@ -6,6 +6,8 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
 
+const util = require('util')
+
 chai.use(chaiHttp);
 
 describe('Client Routes', () => {
@@ -130,6 +132,7 @@ describe('Meal Routes', () => {
     chai.request(server)
     .get('/api/v1/meals')
     .end((err, response) => {
+      console.log(util.inspect(response.body, false, null));
       response.should.have.status(200);
       response.should.be.json;
       response.body.should.be.a('array');
@@ -144,10 +147,15 @@ describe('Meal Routes', () => {
       response.body[0].foods[0].name.should.equal('banana');
       response.body[0].foods[0].calories.should.equal(150);
       response.body[1].name.should.equal('Snack')
-      response.body[1].should.not.have.property('foods')
+      // response.body[1].should.not.have.property('foods')
+      response.body[2].name.should.equal('Lunch')
+      response.body[2].foods[0].name.should.equal('salad');
+      response.body[3].name.should.equal('Dinner')
+      response.body[3].id.should.equal(4)
+      response.body[3].foods.length.should.equal(2);
       done();
     });
   }); // it should return one food
 
-  
+
 }); // end of meal routes

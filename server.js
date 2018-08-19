@@ -80,11 +80,12 @@ function parseMeals(meals) {
     if(!meal_obj['id']) { // if meal is new
       meal_obj = { // set name and id
         'id': meal_item.id,
-        'name': meal_item.name,
+        'name': meal_item.name
       }
-      if(meal_item['food_id']) { // doesn't add food array if no foods
+      // was showing null for empty meal without this, skipped lunch, dinner with this
+      // if(meal_item['food_id']) { // doesn't add food array if no foods
         meal_obj['foods'] = []
-      }
+      // }
     } // end if meal is new
 
     if(meal_item['food_id']) { // won't add food if no food present
