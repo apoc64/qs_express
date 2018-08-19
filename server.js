@@ -59,41 +59,45 @@ app.delete('/api/v1/foods/:id', (request, response) => {
 
 // Meal Routes:
 app.get('/api/v1/meals', (request, response) => {
-  // console.log("Getting meals");
   database('meals')
   .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
   .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
   .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
 
   .then((meals) => {
-    // JS parse response:
-    var meals_response = [{}, {}, {}, {}]
+    const meals_response = parseMeals(meals)
+    response.status(200).json(meals_response);
+  }) // end then - JSON parse
+}); // end get meals
 
-    meals.forEach((meal_item) => {
-      var meal_obj = meals_response[meal_item.id - 1]
-      // debugger
-      if(!meal_obj['id']) {
-        // console.log("blank");
-        meal_obj = {
-          'id': meal_item.id,
-          'name': meal_item.name,
-          'foods': []
-        }
+
+// Helper Methods:
+function parseMeals(meals) {
+  var meals_response = [{}, {}, {}, {}] // stubs response
+
+  meals.forEach((meal_item) => {
+    var meal_obj = meals_response[meal_item.id - 1] // get correspopnding meal
+    if(!meal_obj['id']) { // if meal is new
+      meal_obj = { // set name and id
+        'id': meal_item.id,
+        'name': meal_item.name,
       }
-      // console.log(meal_obj);
+      if(meal_item['food_id']) { // doesn't add food array if no foods
+        meal_obj['foods'] = []
+      }
+    } // end if meal is new
+
+    if(meal_item['food_id']) { // won't add food if no food present
       meal_obj.foods.push({
         'id': meal_item.food_id,
         'name': meal_item.food_name,
         'calories': meal_item.calories
       })
-      // console.log(meal_obj);
-      meals_response[meal_item.id - 1] = meal_obj
-      // console.log(meals_response);
-    })
-
-    response.status(200).json(meals_response);
-  })
-});
+    } // end if add food
+    meals_response[meal_item.id - 1] = meal_obj // add object to respopnse
+  }) // end for each meal_item
+  return meals_response
+} // end parseMeals
 
 // Listener:
 app.listen(app.get('port'), () => {
