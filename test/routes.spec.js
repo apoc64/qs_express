@@ -32,7 +32,10 @@ describe('Food Routes', () => {
   });
 
   beforeEach((done) => {
-    database('foods').del().then(() =>
+    database('meal_foods').del()
+    .then(() => database('meals').del())
+    .then(() => database('foods').del())
+    .then(() =>
       database('foods').insert({
         id: 1,
         name: "banana",
@@ -124,11 +127,13 @@ describe('Meal Routes', () => {
   });
 
   it('should return meals with foods', done => {
+    // console.log("About to request meals");
     chai.request(server)
     .get('/api/v1/meals')
     .end((err, response) => {
       response.should.have.status(200);
       response.should.be.json;
+      console.log(response.body);
       response.body.should.be.a('array');
       response.body.length.should.equal(4);
       response.body[0].should.have.property('name');

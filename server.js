@@ -59,9 +59,39 @@ app.delete('/api/v1/foods/:id', (request, response) => {
 
 // Meal Routes:
 app.get('/api/v1/meals', (request, response) => {
-  database('meals').select()
+  // console.log("Getting meals");
+  database('meals')
+  .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
+  .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
+  .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
+
   .then((meals) => {
-    response.status(200).json(meals);
+    // JS parse response:
+    var meals_response = [{}, {}, {}, {}]
+
+    meals.forEach((meal_item) => {
+      var meal_obj = meals_response[meal_item.id - 1]
+      // debugger
+      if(!meal_obj['id']) {
+        // console.log("blank");
+        meal_obj = {
+          'id': meal_item.id,
+          'name': meal_item.name,
+          'foods': []
+        }
+      }
+      // console.log(meal_obj);
+      meal_obj.foods.push({
+        'id': meal_item.food_id,
+        'name': meal_item.food_name,
+        'calories': meal_item.calories
+      })
+      // console.log(meal_obj);
+      meals_response[meal_item.id - 1] = meal_obj
+      // console.log(meals_response);
+    })
+
+    response.status(200).json(meals_response);
   })
 });
 
