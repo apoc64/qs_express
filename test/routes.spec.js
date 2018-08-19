@@ -127,13 +127,11 @@ describe('Meal Routes', () => {
   });
 
   it('should return meals with foods', done => {
-    // console.log("About to request meals");
     chai.request(server)
     .get('/api/v1/meals')
     .end((err, response) => {
       response.should.have.status(200);
       response.should.be.json;
-      console.log(response.body);
       response.body.should.be.a('array');
       response.body.length.should.equal(4);
       response.body[0].should.have.property('name');
@@ -145,7 +143,11 @@ describe('Meal Routes', () => {
       response.body[0].foods[0].should.have.property('name');
       response.body[0].foods[0].name.should.equal('banana');
       response.body[0].foods[0].calories.should.equal(150);
+      response.body[1].name.should.equal('Snack')
+      response.body[1].should.not.have.property('foods')
       done();
     });
   }); // it should return one food
+
+  
 }); // end of meal routes
