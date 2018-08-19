@@ -168,4 +168,16 @@ describe('Meal Routes', () => {
       done();
     });
   }); // end it should post food to meal
+
+  it('should delete a meal food', done => {
+    chai.request(server)
+    .delete('/api/v1/meals/1/foods/3')
+    .end((err, response) => {
+      response.should.have.status(200);
+      response.should.be.json;
+      response.body.should.be.a('object');
+      response.body.message.should.equal('Successfully removed BANANA to BREAKFAST');
+      done();
+    });
+  }); // end it should delete meal food
 }); // end of meal routes
