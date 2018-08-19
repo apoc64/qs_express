@@ -132,7 +132,7 @@ describe('Meal Routes', () => {
     chai.request(server)
     .get('/api/v1/meals')
     .end((err, response) => {
-      console.log(util.inspect(response.body, false, null));
+      // console.log(util.inspect(response.body, false, null));
       response.should.have.status(200);
       response.should.be.json;
       response.body.should.be.a('array');
@@ -157,5 +157,15 @@ describe('Meal Routes', () => {
     });
   }); // it should return one food
 
-
+  it('should post a food to a meal', done => {
+    chai.request(server)
+    .post('/api/v1/meals/1/foods/1')
+    .end((err, response) => {
+      response.should.have.status(201);
+      response.should.be.json;
+      response.body.should.be.a('object');
+      response.body.message.should.equal('Successfully added PIZZA to SNACK');
+      done();
+    });
+  }); // end it should post food to meal
 }); // end of meal routes
