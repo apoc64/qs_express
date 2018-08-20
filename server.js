@@ -1,13 +1,11 @@
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const foodModel = require('./model/foods.js')
+const mealModel = require('./model/meals.js')
 
 app.use(cors())
-
-const environment = process.env.NODE_ENV || 'development';
-const configuration = require('./knexfile')[environment];
-const database = require('knex')(configuration);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,121 +18,52 @@ app.get('/', (request, response) => {
 
 // Food Routes:
 app.get('/api/v1/foods', (request, response) => {
-  database('foods').select()
-  .then((foods) => {
+  foodModel.getAll().then((foods) => {
     response.status(200).json(foods);
-  })
+  });
 });
 
 app.post('/api/v1/foods', (request, response) => {
-  const food = request.body.food;
-  // for - req'd params
-  database('foods').insert(food)
-  .then(() => {
-    response.status(201).json({ message: "food created" })
-  })
-  .catch(error => {
-    respopnse.status(500).json({ error })
-  })
+  foodModel.postFood(request.body.food)
+  .then((message) => {
+    response.status(201).json(message);
+  });
 });
 
 app.get('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).select()
-  .then((foods) => {
-    // if ...
-    response.status(200).json(foods[0]);
+  foodModel.getFood(request.params.id)
+  .then((food) => {
+    response.status(200).json(food)
   })
 });
 
 app.delete('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).del()
-  .then((success) => {
-    if(success) {
-      response.status(204).json({ message: "food deleted" });
-    } else {
-      response.status(404).json({ message: "invalid food" });
-    }
+  foodModel.deleteFood(request.params.id)
+  .then((content) => {
+    response.status(content.status).json(content.body)
   })
 });
 
 // Meal Routes:
 app.get('/api/v1/meals', (request, response) => {
-  database('meals')
-  .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
-  .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
-  .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
-
-  .then((meals) => {
-    const meals_response = parseMeals(meals)
-    response.status(200).json(meals_response);
-  }) // end then - JSON parse
+  mealModel.getMeals().then((meals) => {
+    response.status(200).json(meals);
+  })
 }); // end get meals
 
 app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
-  database('foods').where('id', request.params.food_id)
-  .then((food) => {
-    const food_name = food[0].name.toUpperCase();
-    database('meals').where('id', request.params.meal_id)
-    .then((meal) => {
-      const meal_name = meal[0].name.toUpperCase()
-      database('meal_foods')
-      .insert({'meal_id': request.params.meal_id, 'food_id': request.params.food_id})
-      .then(() => { // 404?
-        response.status(201).json({'message': `Successfully added ${food_name} to ${meal_name}`})
-      })
-    }) // then meal
-  }) // then food
+  mealModel.postFoodMeal(request.params.food_id, request.params.meal_id)
+  .then((message) => {
+    response.status(201).json(message)
+  });
 }); // end post meal food
 
 app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
-  database('foods').where('id', request.params.food_id)
-  .then((food) => {
-    const food_name = food[0].name.toUpperCase();
-    database('meals').where('id', request.params.meal_id)
-    .then((meal) => {
-      const meal_name = meal[0].name.toUpperCase()
-      database('meal_foods')
-      .where({'meal_id': request.params.meal_id, 'food_id': request.params.food_id}).del()
-      .then((success) => {
-        if(success) {
-          response.status(200).json({'message': `Successfully removed ${food_name} to ${meal_name}`});
-        } else {
-          response.status(404).json({'message': 'Failed to remove food from meal'})
-        } // end if/else success
-      })
-    }) // then meal
-  }) // then food
+  mealModel.deleteFoodMeal(request.params.food_id, request.params.meal_id)
+  .then((message) => {
+    response.status(200).json(message);
+  });
 }); // end delete meal food
-
-
-// Helper Methods:
-function parseMeals(meals) {
-  var meals_response = [{}, {}, {}, {}] // stubs response
-
-  meals.forEach((meal_item) => {
-    var meal_obj = meals_response[meal_item.id - 1] // get correspopnding meal
-    if(!meal_obj['id']) { // if meal is new
-      meal_obj = { // set name and id
-        'id': meal_item.id,
-        'name': meal_item.name
-      }
-      // was showing null for empty meal without this, skipped lunch, dinner with this
-      // if(meal_item['food_id']) { // doesn't add food array if no foods
-        meal_obj['foods'] = []
-      // }
-    } // end if meal is new
-
-    if(meal_item['food_id']) { // won't add food if no food present
-      meal_obj.foods.push({
-        'id': meal_item.food_id,
-        'name': meal_item.food_name,
-        'calories': meal_item.calories
-      })
-    } // end if add food
-    meals_response[meal_item.id - 1] = meal_obj // add object to respopnse
-  }) // end for each meal_item
-  return meals_response
-} // end parseMeals
 
 // Listener:
 app.listen(app.get('port'), () => {
