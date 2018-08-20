@@ -3,6 +3,7 @@ var cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const mealSerializer = require('./helpers/meal_serializer');
+const foodModel = require('./model/foods.js')
 
 app.use(cors())
 
@@ -21,10 +22,9 @@ app.get('/', (request, response) => {
 
 // Food Routes:
 app.get('/api/v1/foods', (request, response) => {
-  database('foods').select()
-  .then((foods) => {
+  foodModel.getAll().then((foods) => {
     response.status(200).json(foods);
-  })
+  });
 });
 
 app.post('/api/v1/foods', (request, response) => {
