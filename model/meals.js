@@ -17,3 +17,19 @@ exports.getMeals = function () {
     return (meals_response);
   }) // end then - JSON parse
 }
+
+exports.postFoodMeal = function (foodId, mealId) {
+  return database('foods').where('id', foodId)
+  .then((food) => {
+    const foodName = food[0].name.toUpperCase();
+    return database('meals').where('id', mealId)
+    .then((meal) => {
+      const mealName = meal[0].name.toUpperCase()
+      return database('meal_foods')
+      .insert({'meal_id': mealId, 'food_id': foodId})
+      .then(() => { // 404?
+        return ({'message': `Successfully added ${foodName} to ${mealName}`})
+      })
+    }) // then meal
+  }) // then food
+}
