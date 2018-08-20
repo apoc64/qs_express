@@ -1,10 +1,9 @@
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
-const mealSerializer = require('./helpers/meal_serializer');
 const foodModel = require('./model/foods.js')
-console.log(foodModel)
+const mealModel = require('./model/meals.js')
 
 app.use(cors())
 
@@ -32,13 +31,12 @@ app.post('/api/v1/foods', (request, response) => {
   foodModel.postFood(request.body.food)
   .then((message) => {
     response.status(201).json(message);
-  })
+  });
 });
 
 app.get('/api/v1/foods/:id', (request, response) => {
   database('foods').where('id', request.params.id).select()
   .then((foods) => {
-    // if ...
     response.status(200).json(foods[0]);
   })
 });
@@ -56,15 +54,9 @@ app.delete('/api/v1/foods/:id', (request, response) => {
 
 // Meal Routes:
 app.get('/api/v1/meals', (request, response) => {
-  database('meals')
-  .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
-  .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
-  .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
-
-  .then((meals) => {
-    const meals_response = mealSerializer.parseMeals(meals)
-    response.status(200).json(meals_response);
-  }) // end then - JSON parse
+  mealModel.getMeals().then((meals) => {
+    response.status(200).json(meals);
+  })
 }); // end get meals
 
 app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
