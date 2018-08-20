@@ -35,9 +35,9 @@ app.post('/api/v1/foods', (request, response) => {
 });
 
 app.get('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).select()
-  .then((foods) => {
-    response.status(200).json(foods[0]);
+  foodModel.getFood(request.params.id)
+  .then((food) => {
+    response.status(200).json(food)
   })
 });
 

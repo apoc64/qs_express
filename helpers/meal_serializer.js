@@ -22,5 +22,3 @@ exports.parseMeals = function (meals) {
   }) // end for each meal_item
   return meals_response
 } // end parseMeals
-
-// module.exports = parseMeals

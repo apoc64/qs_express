@@ -21,7 +21,6 @@ describe('Client Routes', () => {
       done();
     });
   });
-
 });
 
 describe('Food Routes', () => {

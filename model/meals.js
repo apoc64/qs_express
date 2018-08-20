@@ -6,7 +6,6 @@ const mealSerializer = require('../helpers/meal_serializer');
 
 
 exports.getMeals = function () {
-  console.log("called model getMeals");
   return database('meals')
   .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
   .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
