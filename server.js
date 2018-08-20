@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mealSerializer = require('./helpers/meal_serializer');
 const foodModel = require('./model/foods.js')
+console.log(foodModel)
 
 app.use(cors())
 
@@ -28,14 +29,9 @@ app.get('/api/v1/foods', (request, response) => {
 });
 
 app.post('/api/v1/foods', (request, response) => {
-  const food = request.body.food;
-  // for - req'd params
-  database('foods').insert(food)
-  .then(() => {
-    response.status(201).json({ message: "food created" })
-  })
-  .catch(error => {
-    respopnse.status(500).json({ error })
+  foodModel.postFood(request.body.food)
+  .then((message) => {
+    response.status(201).json(message);
   })
 });
 
