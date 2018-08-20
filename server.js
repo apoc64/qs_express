@@ -2,6 +2,7 @@ const express = require('express');
 var cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const mealSerializer = require('./helpers/meal_serializer');
 
 app.use(cors())
 
@@ -65,7 +66,7 @@ app.get('/api/v1/meals', (request, response) => {
   .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
 
   .then((meals) => {
-    const meals_response = parseMeals(meals)
+    const meals_response = mealSerializer.parseMeals(meals)
     response.status(200).json(meals_response);
   }) // end then - JSON parse
 }); // end get meals
@@ -105,36 +106,6 @@ app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
     }) // then meal
   }) // then food
 }); // end delete meal food
-
-
-// Helper Methods:
-function parseMeals(meals) {
-  var meals_response = [{}, {}, {}, {}] // stubs response
-
-  meals.forEach((meal_item) => {
-    var meal_obj = meals_response[meal_item.id - 1] // get correspopnding meal
-    if(!meal_obj['id']) { // if meal is new
-      meal_obj = { // set name and id
-        'id': meal_item.id,
-        'name': meal_item.name
-      }
-      // was showing null for empty meal without this, skipped lunch, dinner with this
-      // if(meal_item['food_id']) { // doesn't add food array if no foods
-        meal_obj['foods'] = []
-      // }
-    } // end if meal is new
-
-    if(meal_item['food_id']) { // won't add food if no food present
-      meal_obj.foods.push({
-        'id': meal_item.food_id,
-        'name': meal_item.food_name,
-        'calories': meal_item.calories
-      })
-    } // end if add food
-    meals_response[meal_item.id - 1] = meal_obj // add object to respopnse
-  }) // end for each meal_item
-  return meals_response
-} // end parseMeals
 
 // Listener:
 app.listen(app.get('port'), () => {
