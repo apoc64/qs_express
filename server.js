@@ -44,6 +44,13 @@ app.delete('/api/v1/foods/:id', (request, response) => {
   })
 });
 
+app.patch('/api/v1/foods/:id', (request, response) => {
+  foodModel.updateFood(request.params.id, request.body.food)
+  .then((content) => {
+    response.status(content.status).json(content.body)
+  })
+})
+
 // Meal Routes:
 app.get('/api/v1/meals', (request, response) => {
   mealModel.getMeals().then((meals) => {

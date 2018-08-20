@@ -33,3 +33,14 @@ exports.deleteFood = function (id) {
     }
   })
 }
+
+exports.updateFood = function (id, foodParams) {
+  return database('foods').where('id', id)
+  .update(foodParams)
+  .then(() => {
+    return ({status: 200, body: {message: "successfully updated food"}})
+  })
+  .catch((error) => {
+    return ({status: 500, body: { error }})
+  })
+}
