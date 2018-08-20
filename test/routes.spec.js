@@ -179,4 +179,19 @@ describe('Meal Routes', () => {
       done();
     });
   }); // end it should delete meal food
+
+  it('should update a meal', done => {
+    chai.request(server)
+    .patch('/api/v1/foods/1')
+    .send({ "food": {
+      "name": "pepperoni pizza",
+      "calories": 500
+      }
+    })
+    .end((err, response) => {
+      response.should.have.status(200)
+      done();
+    });
+  })
+
 }); // end of meal routes
