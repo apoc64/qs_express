@@ -22,3 +22,14 @@ exports.getFood = function (id) {
     return (foods[0]);
   });
 };
+
+exports.deleteFood = function (id) {
+  return database('foods').where('id', id).del()
+  .then((success) => {
+    if(success) {
+      return ({status: 204, body: { message: "food deleted" }})
+    } else {
+      return ({status: 404, body: { message: "invalid food" }})
+    }
+  })
+}

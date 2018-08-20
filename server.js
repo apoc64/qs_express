@@ -7,10 +7,6 @@ const mealModel = require('./model/meals.js')
 
 app.use(cors())
 
-const environment = process.env.NODE_ENV || 'development';
-const configuration = require('./knexfile')[environment];
-const database = require('knex')(configuration);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3000);
@@ -42,13 +38,9 @@ app.get('/api/v1/foods/:id', (request, response) => {
 });
 
 app.delete('/api/v1/foods/:id', (request, response) => {
-  database('foods').where('id', request.params.id).del()
-  .then((success) => {
-    if(success) {
-      response.status(204).json({ message: "food deleted" });
-    } else {
-      response.status(404).json({ message: "invalid food" });
-    }
+  foodModel.deleteFood(request.params.id)
+  .then((content) => {
+    response.status(content.status).json(content.body)
   })
 });
 
