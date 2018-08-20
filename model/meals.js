@@ -33,3 +33,23 @@ exports.postFoodMeal = function (foodId, mealId) {
     }) // then meal
   }) // then food
 }
+
+exports.deleteFoodMeal = function(foodId, mealId) {
+  return database('foods').where('id', foodId)
+  .then((food) => {
+    const food_name = food[0].name.toUpperCase();
+    return database('meals').where('id', mealId)
+    .then((meal) => {
+      const meal_name = meal[0].name.toUpperCase()
+      return database('meal_foods')
+      .where({'meal_id': mealId, 'food_id': foodId}).del()
+      .then((success) => {
+        if(success) {
+          return ({'message': `Successfully removed ${food_name} to ${meal_name}`});
+        } else {
+          return ({'message': 'Failed to remove food from meal'})
+        } // end if/else success
+      })
+    }) // then meal
+  }) // then food
+}

@@ -67,23 +67,10 @@ app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
 }); // end post meal food
 
 app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
-  database('foods').where('id', request.params.food_id)
-  .then((food) => {
-    const food_name = food[0].name.toUpperCase();
-    database('meals').where('id', request.params.meal_id)
-    .then((meal) => {
-      const meal_name = meal[0].name.toUpperCase()
-      database('meal_foods')
-      .where({'meal_id': request.params.meal_id, 'food_id': request.params.food_id}).del()
-      .then((success) => {
-        if(success) {
-          response.status(200).json({'message': `Successfully removed ${food_name} to ${meal_name}`});
-        } else {
-          response.status(404).json({'message': 'Failed to remove food from meal'})
-        } // end if/else success
-      })
-    }) // then meal
-  }) // then food
+  mealModel.deleteFoodMeal(request.params.food_id, request.params.meal_id)
+  .then((message) => {
+    response.status(200).json(message);
+  });
 }); // end delete meal food
 
 // Listener:
