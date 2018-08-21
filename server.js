@@ -58,6 +58,12 @@ app.get('/api/v1/meals', (request, response) => {
   })
 }); // end get meals
 
+app.get('/api/v1/meals/:id', (request, response) => {
+  mealModel.getMeal(request.params.id).then((meal) => {
+    response.status(200).json(meal)
+  })
+})
+
 app.post('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
   mealModel.postFoodMeal(request.params.food_id, request.params.meal_id)
   .then((message) => {

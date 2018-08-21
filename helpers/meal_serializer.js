@@ -1,24 +1,45 @@
 exports.parseMeals = function (meals) {
   var meals_response = [{}, {}, {}, {}] // stubs response
-
-  meals.forEach((meal_item) => {
-    var meal_obj = meals_response[meal_item.id - 1] // get correspopnding meal
-    if(!meal_obj['id']) { // if meal is new
-      meal_obj = { // set name and id
-        'id': meal_item.id,
-        'name': meal_item.name
-      }
-        meal_obj['foods'] = []
-    } // end if meal is new
-
-    if(meal_item['food_id']) { // won't add food if no food present
-      meal_obj.foods.push({
-        'id': meal_item.food_id,
-        'name': meal_item.food_name,
-        'calories': meal_item.calories
-      })
-    } // end if add food
-    meals_response[meal_item.id - 1] = meal_obj // add object to respopnse
+  meals.forEach((mealItem) => {
+    var mealObj = meals_response[mealItem.id - 1] // get correspopnding meal
+    mealObj = setMealObj(mealObj, mealItem)
+    meals_response[mealItem.id - 1] = mealObj // add object to respopnse
   }) // end for each meal_item
   return meals_response
 } // end parseMeals
+
+exports.parseMeal = function (mealItems) {
+  var mealObj = {}
+  mealItems.forEach((mealItem) => {
+    mealObj = setMealObj(mealObj, mealItem)
+  })
+  return mealObj
+} // end parse single meal
+
+function setMealObj(mealObj, mealItem) {
+  mealObj = checkNewMeal(mealObj, mealItem)
+  mealObj = checkAddFood(mealObj, mealItem)
+  return mealObj
+}
+
+function checkNewMeal(mealObj, mealItem) {
+  if(!mealObj['id']) { // if meal is new
+    mealObj = { // set name and id
+      'id': mealItem.id,
+      'name': mealItem.name
+    }
+    mealObj['foods'] = []
+  } // end if meal is new
+  return mealObj
+}
+
+function checkAddFood(mealObj, mealItem) {
+  if(mealItem['food_id']) { // won't add food if no food present
+    mealObj.foods.push({
+      'id': mealItem.food_id,
+      'name': mealItem.food_name,
+      'calories': mealItem.calories
+    })
+  }
+  return mealObj
+}
