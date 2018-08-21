@@ -71,6 +71,8 @@ describe('Food Routes', () => {
     })
     .end((err, response) => {
       response.should.have.status(201)
+      response.body.should.have.property('name')
+      response.body.name.should.equal('pizza')
       done();
     });
   }); // it should post a food
@@ -146,7 +148,6 @@ describe('Meal Routes', () => {
       response.body[0].foods[0].name.should.equal('banana');
       response.body[0].foods[0].calories.should.equal(150);
       response.body[1].name.should.equal('Snack')
-      // response.body[1].should.not.have.property('foods')
       response.body[2].name.should.equal('Lunch')
       response.body[2].foods[0].name.should.equal('salad');
       response.body[3].name.should.equal('Dinner')
@@ -192,7 +193,7 @@ describe('Meal Routes', () => {
       response.should.have.status(200)
       done();
     });
-  })
+  }) // end it should update meal
 
   it('should get a meal with foods', done => {
     chai.request(server)
@@ -216,6 +217,6 @@ describe('Meal Routes', () => {
       response.body.foods[1].calories.should.equal(400);
       done();
     });
-  })
+  }) // end it should get a meal with foods
 
 }); // end of meal routes
