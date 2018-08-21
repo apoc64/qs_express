@@ -2,8 +2,7 @@ exports.parseMeals = function (meals) {
   var meals_response = [{}, {}, {}, {}] // stubs response
   meals.forEach((mealItem) => {
     var mealObj = meals_response[mealItem.id - 1] // get correspopnding meal
-    mealObj = checkNewMeal(mealObj, mealItem)
-    mealObj = checkAddFood(mealObj, mealItem)
+    mealObj = setMealObj(mealObj, mealItem)
     meals_response[mealItem.id - 1] = mealObj // add object to respopnse
   }) // end for each meal_item
   return meals_response
@@ -12,11 +11,16 @@ exports.parseMeals = function (meals) {
 exports.parseMeal = function (mealItems) {
   var mealObj = {}
   mealItems.forEach((mealItem) => {
-    mealObj = checkNewMeal(mealObj, mealItem)
-    mealObj = checkAddFood(mealObj, mealItem)
+    mealObj = setMealObj(mealObj, mealItem)
   })
   return mealObj
 } // end parse single meal
+
+function setMealObj(mealObj, mealItem) {
+  mealObj = checkNewMeal(mealObj, mealItem)
+  mealObj = checkAddFood(mealObj, mealItem)
+  return mealObj
+}
 
 function checkNewMeal(mealObj, mealItem) {
   if(!mealObj['id']) { // if meal is new
