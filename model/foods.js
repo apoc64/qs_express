@@ -11,8 +11,9 @@ exports.getAll = function () {
 
 exports.postFood = function (food) {
   return database('foods').insert(food)
-  .then(() => {
-    return ({ message: "food created" })
+  .returning(['id', 'name', 'calories'])
+  .then((food) => {
+    return (food[0])
   })
 }
 

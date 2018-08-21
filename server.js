@@ -25,8 +25,8 @@ app.get('/api/v1/foods', (request, response) => {
 
 app.post('/api/v1/foods', (request, response) => {
   foodModel.postFood(request.body.food)
-  .then((message) => {
-    response.status(201).json(message);
+  .then((food) => {
+    response.status(201).json(food);
   });
 });
 
