@@ -52,3 +52,16 @@ exports.deleteFoodMeal = function(foodId, mealId) {
     }) // then meal
   }) // then food
 }
+
+exports.getMeal = function(id) {
+  return database('meals')
+  .where('meals.id', id)
+  .select('meals.id', 'meals.name', 'foods.id AS food_id', 'foods.name AS food_name', 'calories')
+  .leftOuterJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
+  .leftOuterJoin('foods', 'foods.id', 'meal_foods.food_id')
+  .then((meal) => {
+    // console.log(meal);
+    const meals_response = mealSerializer.parseMeal(meal)
+    return (meals_response);
+  })
+}
