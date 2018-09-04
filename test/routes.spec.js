@@ -273,8 +273,8 @@ describe('Favorite Foods', () => {
         response.body.should.be.a('object');
         response.body.should.have.property('recipes');
         response.body.recipes.should.be.a('array');
-        response.body.recipes.should.have.property('name');
-        response.body.recipes.should.have.property('url');
+        response.body.recipes[0].should.have.property('name');
+        response.body.recipes[0].should.have.property('url');
         done();
       });
     }) // end it should return favorite foods

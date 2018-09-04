@@ -21,11 +21,19 @@ exports.getRecipes = (id) => {
       return response.json()
     })
     .then((recipes) => {
-      console.log(JSON.stringify(recipes));
-      return recipes
+      // console.log(JSON.stringify(recipes));
+      return parseRecipes(recipes)
     })
 
   })
+}
+
+function parseRecipes(recipes) {
+  const matches = recipes.matches
+  const results = matches.map(recipe => {
+    return {"name": recipe.recipeName, "url": recipe.smallImageUrls[0]}
+})
+  return {"recipes": results}
 }
 
 function yummlyURL(name) {
