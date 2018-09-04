@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const foodModel = require('./model/foods.js')
 const mealModel = require('./model/meals.js')
+const favModel = require('./model/favorites.js')
 
 app.use(cors())
 
@@ -77,6 +78,13 @@ app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
     response.status(200).json(message);
   });
 }); // end delete meal food
+
+// Favorite Food Routes:
+app.get('/api/v1/favorite_foods', (request, response) => {
+  favModel.getFavorites().then((favorites) => {
+    response.status(200).json(favorites);
+  })
+}); // end get meals
 
 // Listener:
 app.listen(app.get('port'), () => {
