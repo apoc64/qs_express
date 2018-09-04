@@ -218,7 +218,6 @@ describe('Meal Routes', () => {
       done();
     });
   }) // end it should get a meal with foods
-
 }); // end of meal routes
 
 describe('Favorite Foods', () => {
@@ -267,7 +266,7 @@ describe('Favorite Foods', () => {
       chai.request(server)
       .get('/api/v1/foods/2/recipes')
       .end((err, response) => {
-        console.log(util.inspect(response.body, false, null));
+        // console.log(util.inspect(response.body, false, null));
         response.should.have.status(200);
         response.should.be.json;
         response.body.should.be.a('object');
