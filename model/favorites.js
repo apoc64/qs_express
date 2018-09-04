@@ -7,11 +7,20 @@ exports.getFavorites = () => {
   .then((favorites) => {
     var rows = favorites.rows
     const maxCount = rows[0].food_count
-    results = rows.filter(row => row.food_count === maxCount)
+    const mostEatenWithCount = rows.filter(row => row.food_count === maxCount)
+    const mostEaten = mostEatenWithCount.map(row => {
+      const obj = {
+        "name": row.name,
+        "calories": row.calories
+      }
+      return obj
+    })
+    var results = {
+      "timesEaten": parseInt(maxCount),
+      "foods": mostEaten
+    }
 
-    console.log(maxCount);
-
-    return rows
+    return results
 
   });
 };

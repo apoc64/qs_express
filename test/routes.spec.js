@@ -246,13 +246,12 @@ describe('Favorite Foods', () => {
       chai.request(server)
       .get('/api/v1/favorite_foods')
       .end((err, response) => {
-        // console.log(util.inspect(response.body, false, null));
+        console.log(util.inspect(response.body, false, null));
         response.should.have.status(200);
         response.should.be.json;
-        console.log(response.body);
         response.body.should.be.a('object');
         response.body.should.have.property('timesEaten');
-        response.body.name.should.equal(2);
+        response.body.timesEaten.should.equal(2);
         response.body.should.have.property('foods');
         response.body.foods.should.be.a('array');
         response.body.foods.should.have.length(2);
