@@ -258,6 +258,10 @@ describe('Favorite Foods', () => {
         response.body.foods[0].should.have.property('name');
         response.body.foods[0].name.should.equal('pizza');
         response.body.foods[0].calories.should.equal(400);
+        response.body.foods[0].should.have.property('mealsWhenEaten');
+        response.body.foods[0].mealsWhenEaten.should.be.a('array');
+        response.body.foods[0].mealsWhenEaten.should.have.length(2);
+        response.body.foods[0].mealsWhenEaten[0].should.equal('Dinner');
         done();
       });
     }) // end it should return favorite foods
