@@ -232,29 +232,33 @@ describe('Favorite Foods', () => {
 
   beforeEach((done) => {
     database.seed.run()
-    .then(() => done())
-    .catch(error => {
-      throw error;
-    });
+    .then(() =>
+    database('meal_foods').insert({
+      food_id: 1,
+      meal_id: 3
+    }).then(() => done()))
   });
 
 
     it('should return favorite foods', done => {
+      // add extra meal_food
+
       chai.request(server)
       .get('/api/v1/favorite_foods')
       .end((err, response) => {
         // console.log(util.inspect(response.body, false, null));
         response.should.have.status(200);
         response.should.be.json;
+        console.log(response.body);
         response.body.should.be.a('object');
         response.body.should.have.property('timesEaten');
         response.body.name.should.equal(2);
         response.body.should.have.property('foods');
         response.body.foods.should.be.a('array');
-        response.body.foods.should.have.length(1);
+        response.body.foods.should.have.length(2);
         response.body.foods[0].should.have.property('name');
-        response.body.foods[0].name.should.equal('salad');
-        response.body.foods[0].calories.should.equal(100);
+        response.body.foods[0].name.should.equal('pizza');
+        response.body.foods[0].calories.should.equal(400);
         done();
       });
     }) // end it should return favorite foods
