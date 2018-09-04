@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const foodModel = require('./model/foods.js')
 const mealModel = require('./model/meals.js')
 const favModel = require('./model/favorites.js')
+const recipeModel = require('./model/recipes.js')
 
 app.use(cors())
 
@@ -83,6 +84,12 @@ app.delete('/api/v1/meals/:meal_id/foods/:food_id', (request, response) => {
 app.get('/api/v1/favorite_foods', (request, response) => {
   favModel.getFavorites().then((favorites) => {
     response.status(200).json(favorites);
+  })
+}); // end get meals
+
+app.get('/api/v1/foods/:id/recipes', (request, response) => {
+  recipeModel.getRecipes(request.params.id).then((recipes) => {
+    response.status(200).json(recipes);
   })
 }); // end get meals
 

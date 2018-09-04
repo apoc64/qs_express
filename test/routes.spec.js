@@ -239,14 +239,11 @@ describe('Favorite Foods', () => {
     }).then(() => done()))
   });
 
-
     it('should return favorite foods', done => {
-      // add extra meal_food
-
       chai.request(server)
       .get('/api/v1/favorite_foods')
       .end((err, response) => {
-        console.log(util.inspect(response.body, false, null));
+        // console.log(util.inspect(response.body, false, null));
         response.should.have.status(200);
         response.should.be.json;
         response.body.should.be.a('object');
@@ -262,6 +259,22 @@ describe('Favorite Foods', () => {
         response.body.foods[0].mealsWhenEaten.should.be.a('array');
         response.body.foods[0].mealsWhenEaten.should.have.length(2);
         response.body.foods[0].mealsWhenEaten[0].should.equal('Dinner');
+        done();
+      });
+    }) // end it should return favorite foods
+
+    it('should return recipies for a food', done => {
+      chai.request(server)
+      .get('/api/v1/foods/2/recipes')
+      .end((err, response) => {
+        console.log(util.inspect(response.body, false, null));
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('recipes');
+        response.body.recipes.should.be.a('array');
+        response.body.recipes.should.have.property('name');
+        response.body.recipes.should.have.property('url');
         done();
       });
     }) // end it should return favorite foods

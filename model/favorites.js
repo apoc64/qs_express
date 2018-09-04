@@ -20,7 +20,6 @@ exports.getFavorites = () => {
         const mealNames = mealFoods.filter(mealRow => {
           return mealRow.food_id == row.id
         }).map(nameRow => nameRow.name)
-        console.log(mealNames);
         const obj = {
           "name": row.name,
           "calories": row.calories,
