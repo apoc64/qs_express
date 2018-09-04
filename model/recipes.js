@@ -1,4 +1,3 @@
-require('es6-promise').polyfill();
 require("isomorphic-fetch")
 
 const environment = process.env.NODE_ENV || 'development';
@@ -22,7 +21,6 @@ exports.getRecipes = (id) => {
     .then((recipes) => {
       return parseRecipes(recipes)
     })
-
   })
 }
 
