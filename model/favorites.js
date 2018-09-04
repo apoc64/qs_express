@@ -11,18 +11,20 @@ exports.getFavorites = () => {
     .innerJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
     .then((mealFoods) => {
 
-      console.log("Inside then");
       console.log(mealFoods);
       var rows = favorites.rows
       const maxCount = rows[0].food_count
       const mostEatenWithCount = rows.filter(row => row.food_count === maxCount)
 
-
       const mostEaten = mostEatenWithCount.map(row => {
+        const mealNames = mealFoods.filter(mealRow => {
+          return mealRow.food_id == row.id
+        }).map(nameRow => nameRow.name)
+        console.log(mealNames);
         const obj = {
           "name": row.name,
           "calories": row.calories,
-          "mealsWhenEaten": "hello"
+          "mealsWhenEaten": mealNames
         }
         return obj
       })
