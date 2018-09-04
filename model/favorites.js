@@ -10,32 +10,34 @@ exports.getFavorites = () => {
     .select('meals.name', 'meal_foods.food_id')
     .innerJoin('meal_foods', 'meals.id', 'meal_foods.meal_id')
     .then((mealFoods) => {
-
-      console.log(mealFoods);
-      var rows = favorites.rows
-      const maxCount = rows[0].food_count
-      const mostEatenWithCount = rows.filter(row => row.food_count === maxCount)
-
-      const mostEaten = mostEatenWithCount.map(row => {
-        const mealNames = mealFoods.filter(mealRow => {
-          return mealRow.food_id == row.id
-        }).map(nameRow => nameRow.name)
-        const obj = {
-          "name": row.name,
-          "calories": row.calories,
-          "mealsWhenEaten": mealNames
-        }
-        return obj
-      })
-
-      var results = {
-        "timesEaten": parseInt(maxCount),
-        "foods": mostEaten
-      }
-
-      return results
+      return parseMealFoods(mealFoods, favorites)
     })
-
-
   });
 };
+
+function parseMealFoods(mealFoods, favorites) {
+  console.log(mealFoods);
+  const rows = favorites.rows
+  const maxCount = rows[0].food_count
+  const mostEatenWithCount = rows.filter(row => row.food_count === maxCount)
+
+  const mostEaten = mapEatenFoods(mostEatenWithCount, maxCount, mealFoods)
+
+  return {
+    "timesEaten": parseInt(maxCount),
+    "foods": mostEaten
+  }
+}
+
+function mapEatenFoods(mostEatenWithCount, maxCount, mealFoods) {
+  return mostEatenWithCount.map(row => {
+    const mealNames = mealFoods.filter(mealRow => {
+      return mealRow.food_id == row.id
+    }).map(nameRow => nameRow.name)
+    return {
+      "name": row.name,
+      "calories": row.calories,
+      "mealsWhenEaten": mealNames
+    }
+  }) // end map mostEaten
+}
